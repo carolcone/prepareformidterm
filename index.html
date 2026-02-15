@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precalc Mastery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+        
+        const ChevronLeft = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        );
+        
+        const ChevronRight = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        );
+        
+        const Check = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        );
+        
+        const X = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        );
+        
+        const Home = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        );
+        
+        const BarChart3 = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3v18h18"></path>
+                <path d="M18 17V9"></path>
+                <path d="M13 17V5"></path>
+                <path d="M8 17v-3"></path>
+            </svg>
+        );
+
+        function CarolinePrecalcPractice() {
+          const [screen, setScreen] = useState('home');
+          const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+          const [answers, setAnswers] = useState({});
+          const [showSolution, setShowSolution] = useState(false);
+          const [showResults, setShowResults] = useState(false);
+          const [stats, setStats] = useState({ correct: 0, incorrect: 0 });
+
+          const questions = [
+            {
+              id: 1,
+              topic: 'Coordinate Geometry',
+              question: 'Find the distance d(P₁, P₂) between points P₁ = (4, -6) and P₂ = (1, -2)',
+              options: ['5', '√7', '7', '√13'],
+              correctAnswer: 0,
+              solution: {
+                steps: [
+                  'Use distance formula: d = √[(x₂-x₁)² + (y₂-y₁)²]',
+                  'd = √[(1-4)² + (-2-(-6))²]',
+                  'd = √[(-3)² + (4)²]',
+                  'd = √[9 + 16]',
+                  'd = √25 = 5'
+                ],
+                explanation: 'The distance formula comes from the Pythagorean theorem.'
+              }
+            },
+            {
+              id: 2,
+              topic: 'Linear Equations',
+              question: 'Find the slope of the line containing points (-2, 5) and (4, -3)',
+              options: ['4/3', '-4/3', '3/4', '-3/4'],
+              correctAnswer: 1,
+              solution: {
+                steps: [
+                  'Use slope formula: m = (y₂-y₁)/(x₂-x₁)',
+                  'm = (-3-5)/(4-(-2))',
+                  'm = -8/6',
+                  'm = -4/3'
+                ],
+                explanation: 'Slope represents the rate of change between two points.'
+              }
+            },
+            {
+              id: 3,
+              topic: 'Quadratic Functions',
+              question: 'Determine whether f(x) = x² - 2x - 7 has a max or min, and find that value',
+              options: ['minimum; -8', 'maximum; -8', 'minimum; 1', 'maximum; 1'],
+              correctAnswer: 0,
+              solution: {
+                steps: [
+                  'Coefficient of x² is positive (1), so parabola opens upward → minimum',
+                  'Find vertex x: x = -b/(2a) = -(-2)/(2×1) = 1',
+                  'Find y: f(1) = 1² - 2(1) - 7 = -8',
+                  'Minimum value is -8'
+                ],
+                explanation: 'Positive leading coefficient means parabola opens up (has minimum).'
+              }
+            }
+          ];
+
+          const handleAnswer = (answerIndex) => {
+            setAnswers({ ...answers, [currentQuestionIndex]: answerIndex });
+          };
+
+          const checkAnswer = () => {
+            const current = questions[currentQuestionIndex];
+            const userAnswer = answers[currentQuestionIndex];
+            const isCorrect = userAnswer === current.correctAnswer;
+            setStats({
+              correct: stats.correct + (isCorrect ? 1 : 0),
+              incorrect: stats.incorrect + (isCorrect ? 0 : 1)
+            });
+            setShowSolution(true);
+          };
+
+          const nextQuestion = () => {
+            setShowSolution(false);
+            if (currentQuestionIndex < questions.length - 1) {
+              setCurrentQuestionIndex(currentQuestionIndex + 1);
+            } else {
+              setShowResults(true);
+            }
+          };
+
+          const prevQuestion = () => {
+            if (currentQuestionIndex > 0) {
+              setShowSolution(false);
+              setCurrentQuestionIndex(currentQuestionIndex - 1);
+            }
+          };
+
+          const resetTest = () => {
+            setCurrentQuestionIndex(0);
+            setAnswers({});
+            setShowSolution(false);
+            setShowResults(false);
+            setScreen('home');
+          };
+
+          if (screen === 'home') {
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
+                <div className="max-w-md mx-auto pt-12 pb-8">
+                  <div className="text-center mb-12">
+                    <div className="inline-block p-4 bg-white rounded-2xl shadow-lg mb-4">
+                      <BarChart3 className="w-12 h-12 text-indigo-600" />
+                    </div>
+                    <h1 className="text-4xl font-bold text-slate-800 mb-2" style={{ fontFamily: "'Spectral', serif" }}>
+                      Precalc Mastery
+                    </h1>
+                    <p className="text-slate-600">Choose your study mode</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => setScreen('practice')}
+                      className="w-full bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 text-left border-2 border-transparent hover:border-indigo-200"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-indigo-100 rounded-xl">
+                          <Check className="w-6 h-6 text-indigo-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-slate-800 mb-1">Practice Test</h3>
+                          <p className="text-sm text-slate-600">3 sample questions • Self-paced • Full solutions</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => setScreen('study')}
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 text-left"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-white/20 rounded-xl">
+                          <Home className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-white mb-1">Study Guide</h3>
+                          <p className="text-sm text-indigo-100">Key concepts • Formulas • Examples</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          if (screen === 'study') {
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 overflow-y-auto">
+                <div className="max-w-2xl mx-auto pt-8 pb-8">
+                  <button
+                    onClick={() => setScreen('home')}
+                    className="flex items-center gap-2 text-slate-600 hover:text-slate-800 mb-6 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    Back to Home
+                  </button>
+
+                  <h1 className="text-3xl font-bold text-slate-800 mb-8" style={{ fontFamily: "'Spectral', serif" }}>
+                    Precalculus Study Guide
+                  </h1>
+
+                  <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg">
+                      <h2 className="text-xl font-bold text-indigo-600 mb-4">Distance Formula</h2>
+                      <div className="bg-indigo-50 p-4 rounded-xl mb-2">
+                        <code className="text-indigo-800">d = √[(x₂-x₁)² + (y₂-y₁)²]</code>
+                      </div>
+                      <p className="text-sm text-slate-600">Finds the distance between two points</p>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg">
+                      <h2 className="text-xl font-bold text-indigo-600 mb-4">Slope Formula</h2>
+                      <div className="bg-indigo-50 p-4 rounded-xl mb-2">
+                        <code className="text-indigo-800">m = (y₂-y₁)/(x₂-x₁)</code>
+                      </div>
+                      <p className="text-sm text-slate-600">Rise over run - measures steepness</p>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg">
+                      <h2 className="text-xl font-bold text-indigo-600 mb-4">Quadratic Vertex</h2>
+                      <div className="bg-indigo-50 p-4 rounded-xl mb-2">
+                        <code className="text-indigo-800">x = -b/(2a)</code>
+                      </div>
+                      <p className="text-sm text-slate-600">Find x-coordinate of vertex for f(x) = ax² + bx + c</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          if (showResults) {
+            const totalAnswered = stats.correct + stats.incorrect;
+            const percentage = totalAnswered > 0 ? Math.round((stats.correct / totalAnswered) * 100) : 0;
+
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
+                <div className="max-w-md mx-auto pt-12 pb-8">
+                  <div className="text-center mb-8">
+                    <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+                      {percentage}%
+                    </div>
+                    <p className="text-slate-600">{stats.correct} out of {totalAnswered} correct</p>
+                  </div>
+                  <button
+                    onClick={resetTest}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-semibold shadow-lg"
+                  >
+                    Back to Home
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          const current = questions[currentQuestionIndex];
+          const userAnswer = answers[currentQuestionIndex];
+          const isAnswered = userAnswer !== undefined;
+          const isCorrect = isAnswered && userAnswer === current.correctAnswer;
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
+              <div className="max-w-md mx-auto pt-4 pb-24">
+                <div className="flex items-center justify-between mb-6">
+                  <button onClick={() => setScreen('home')} className="text-slate-600">
+                    <Home className="w-5 h-5" />
+                  </button>
+                  <div className="text-sm font-medium text-slate-600">
+                    Question {currentQuestionIndex + 1} of {questions.length}
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <div className="h-2 bg-white rounded-full overflow-hidden shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+                      style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium mb-4">
+                  {current.topic}
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl shadow-lg mb-6">
+                  <p className="text-lg text-slate-800 leading-relaxed" style={{ fontFamily: "'Spectral', serif" }}>
+                    {current.question}
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  {current.options.map((option, idx) => {
+                    const isSelected = userAnswer === idx;
+                    const isCorrectOption = idx === current.correctAnswer;
+                    let bgColor = 'bg-white hover:bg-slate-50';
+                    let borderColor = 'border-slate-200';
+
+                    if (showSolution) {
+                      if (isCorrectOption) {
+                        bgColor = 'bg-green-50';
+                        borderColor = 'border-green-400';
+                      } else if (isSelected) {
+                        bgColor = 'bg-red-50';
+                        borderColor = 'border-red-400';
+                      }
+                    } else if (isSelected) {
+                      bgColor = 'bg-indigo-50';
+                      borderColor = 'border-indigo-400';
+                    }
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => !showSolution && handleAnswer(idx)}
+                        disabled={showSolution}
+                        className={`w-full p-4 rounded-xl border-2 ${borderColor} ${bgColor} transition-all text-left`}
+                      >
+                        <span className="text-slate-700">{option}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {showSolution && (
+                  <div className={`p-6 rounded-2xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
+                    <h3 className="text-lg font-semibold mb-4">{isCorrect ? 'Correct!' : 'Not quite'}</h3>
+                    <h4 className="font-semibold text-slate-800 mb-2">Solution:</h4>
+                    <ol className="space-y-2 mb-4">
+                      {current.solution.steps.map((step, idx) => (
+                        <li key={idx} className="text-sm text-slate-700">{idx + 1}. {step}</li>
+                      ))}
+                    </ol>
+                    <p className="text-sm text-slate-600 italic">{current.solution.explanation}</p>
+                  </div>
+                )}
+
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
+                  <div className="max-w-md mx-auto flex gap-3">
+                    <button onClick={prevQuestion} disabled={currentQuestionIndex === 0}
+                      className="p-3 rounded-xl bg-slate-100 text-slate-600 disabled:opacity-50">
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    {!showSolution ? (
+                      <button onClick={checkAnswer} disabled={!isAnswered}
+                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold disabled:opacity-50">
+                        Check Answer
+                      </button>
+                    ) : (
+                      <button onClick={nextQuestion}
+                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold">
+                        {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish'}
+                      </button>
+                    )}
+                    <button onClick={nextQuestion} disabled={currentQuestionIndex === questions.length - 1}
+                      className="p-3 rounded-xl bg-slate-100 text-slate-600 disabled:opacity-50">
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CarolinePrecalcPractice />);
+    </script>
+</body>
+</html>
